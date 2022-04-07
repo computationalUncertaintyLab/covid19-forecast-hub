@@ -19,7 +19,7 @@ if __name__ == "__main__":
     
     io = interface(0,LOCATION)
     forecast = io.grab_recent_all_predictions()
-    forecast['value'] = forecast['value'].clip(lower=0)
+    forecast['value'] = round(forecast['value'].clip(lower=0), 1)
 
     forecast["target_end_date"] = pd.to_datetime(forecast.target_end_date)
     forecast["target_end_date"] = forecast.target_end_date.dt.strftime("%Y-%m-%d")
