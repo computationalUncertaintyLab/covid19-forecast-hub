@@ -70,6 +70,11 @@ compilePredictions:
 	echo "compiling predictions"
 	$(PYTHON) compilePredictions.py && echo "Compiled predictions"
 
+postpostprocess:
+# Fixes formatting, trims down to acceptable submission targets
+	echo "post post processing"
+	$(PYTHON) postpostprocess.py && echo "post post processed"
+
 zip:
 	gzip -f *.LUcompUncertLab-VAR__cumulativepredictions.csv
 

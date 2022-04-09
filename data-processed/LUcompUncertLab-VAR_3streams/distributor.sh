@@ -1,6 +1,6 @@
 #!bin/bash
 
-# sbatch -W SLURMrunner_data.sh
+sbatch -W SLURMrunner_data.sh
 echo "crazy bananas"
 
 sub='US'
@@ -16,4 +16,4 @@ while read line; do
 done < RUNS.csv
 
 echo "Compiling predictions"
-sbatch compilePredictions.sh
+sbatch -W lastSteps.sh
