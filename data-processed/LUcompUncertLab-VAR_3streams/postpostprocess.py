@@ -1,5 +1,4 @@
 from interface import interface
-from glob import glob
 import pandas as pd
 
 if __name__ == "__main__":
@@ -20,6 +19,6 @@ if __name__ == "__main__":
 			toSubmit["quantile"].append(row.quantile)
 
 	toSubmit = pd.DataFrame(toSubmit)
-	toSubmit.merge(allPredictions, on=["target", "location", "quantile"], how="left")
+	toSubmit = toSubmit.merge(allPredictions, on=["target", "location", "quantile"], how="left")
 
 	toSubmit.to_csv(final_file, index=False)
