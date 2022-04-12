@@ -5,15 +5,30 @@ if __name__ == "__main__":
 	io = interface(0)
 	final_file = "{:s}-LUcompUncertLab-VAR_3streams.csv".format(io.forecast_date)
 	file = "{:s}-LUcompUncertLab-VAR_3streams__ALMOSTFINAL.csv".format(io.forecast_date)
+	# read in csv
 	allPredictions = pd.read_csv(file)
+	
+	# normalize location values
+	newloc = []
+	for x in allPredictions['location']:
+		if(len(str(x)) > 2):
+			newloc.append(str(x).zfill(5))
+		else:
+			newloc.append(str(x).zfill(2))
+
+	s = pd.Series(newloc)
+	allPredictions['location'] = s
+	
+	# normalize target values
 	allPredictions['target'] = allPredictions['target'].str.replace("covid ", "", regex=False)
 	allPredictions['target'] = allPredictions['target'].str.replace("week", "wk", regex=False)
 
+	# take out extraneous targets
 	toSubmit = {"target":[], "location":[], "quantile": []}
+	wk_inc_case_quantiles = [0.025, 0.100, 0.250, 0.500, 0.750, 0.900, 0.975]
 
 	for row in allPredictions.itertuples(index=False):
-		# print(row["target"], ("wk ahead cum death" in row["target"] or "wk ahead inc death" in row.target or "day ahead inc hosp" in row.target), ("wk ahead inc case" in row.target))
-		if (len(str(row.location)) < 3 and ("wk ahead cum death" in row.target or "wk ahead inc death" in row.target or "day ahead inc hosp" in row.target)) or "wk ahead inc case" in row.target:
+		if (len(str(row.location)) < 3 and ("wk ahead cum death" in row.target or "wk ahead inc death" in row.target or "day ahead inc hosp" in row.target)) or ("wk ahead inc case" in row.target and row.quantile in wk_inc_case_quantiles):
 			toSubmit["target"].append(row.target)
 			toSubmit["location"].append(row.location)
 			toSubmit["quantile"].append(row.quantile)
