@@ -28,6 +28,10 @@ if __name__ == "__main__":
 
 	s = pd.Series(newloc)
 	allPredictions['location'] = s
+
+	# TEMPORARY fix for date values (so i don't have to run cluster job again)
+	# allPredictions['target_end_date'] = pd.to_datetime(allPredictions['target_end_date']) + pd.DateOffset(days=2)
+	# allPredictions['target_end_date'] = allPredictions.target_end_date.dt.strftime("%Y-%m-%d")
 	
 	# normalize target values
 	allPredictions['target'] = allPredictions['target'].str.replace("covid ", "", regex=False)
