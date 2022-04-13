@@ -1,4 +1,6 @@
 #mcandrew
+# converts samples from [forecast_date]_LUcompUncertLab-VAR3Streams__[FIPS].csv.gz into quantiles
+# and puts it in [forecast_date]_LUcompUncertLab-VAR3Streams_FINAL__[FIPS].csv.gz
 
 from interface import interface
 import argparse

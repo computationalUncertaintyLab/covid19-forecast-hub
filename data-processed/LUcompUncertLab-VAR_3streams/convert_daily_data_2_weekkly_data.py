@@ -1,4 +1,6 @@
 #mcandrew
+# this script takes the daily truth data and aggregates the cases, deaths, and hosps
+# by week
 
 import sys
 import numpy as np

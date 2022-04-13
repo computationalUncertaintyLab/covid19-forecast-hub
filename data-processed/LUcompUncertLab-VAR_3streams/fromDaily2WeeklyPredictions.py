@@ -1,4 +1,6 @@
 #mcandrew
+# this aggregates daily cases and deaths into incident weekly cases
+# they are then stored in /location_specific_forecasts/[forecast_date]_LUcompUncertLab-VAR__[FIPS]__weeklypredictions.csv.gz
 
 from interface import interface
 from model import VAR

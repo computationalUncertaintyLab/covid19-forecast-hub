@@ -1,4 +1,7 @@
 #mcandrew
+# accumulates deaths for location passed as CL argument
+# appends to previous __weeklypredictions file
+# sends to [forecast_date]_LUcompUncertLab-VAR__[FIPS]__allpredictions.csv.gz
 
 from interface import interface
 from model import VAR

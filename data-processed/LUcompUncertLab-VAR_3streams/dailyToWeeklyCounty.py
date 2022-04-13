@@ -1,4 +1,6 @@
-#mcandrew
+#mcandrew, piriya
+# just like convert_daily_data_2_weekkly_data.py, it aggregates the columns,
+# but this one is stored separately because the column names are slightly modified
 
 import sys
 import numpy as np

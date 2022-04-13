@@ -1,4 +1,7 @@
 #mcandrew
+# this is the first step of the model
+# it loads in the JHU truth values for cases, deaths, and hosps from the data-truth directory
+# then, for states, it merges them all together, and for counties, it merges county cases with state deaths and hosps
 
 class dataprep(object):
     def __init__(self):
