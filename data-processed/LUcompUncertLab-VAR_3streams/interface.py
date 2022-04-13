@@ -100,7 +100,7 @@ class interface(object):
         import datetime
         import pandas as pd
 
-        start = pd.to_datetime(self.thisWeek.enddate())
+        start = pd.to_datetime(self.thisWeek.enddate() + datetime.timedelta(days=2))
         
         target_end_days = []
         for f in np.arange(1,28+1): # four days ahead
