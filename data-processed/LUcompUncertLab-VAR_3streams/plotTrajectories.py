@@ -20,6 +20,8 @@ if __name__ == "__main__":
     
     #PREPARE DATA
     io = interface(0,LOCATION)
+    io.getClosestDay(6) # Reference will always be from the closest Sunday ( day 6).
+    
     quantiles = io.grab_recent_quantiles()
 
     if len(LOCATION) > 2:

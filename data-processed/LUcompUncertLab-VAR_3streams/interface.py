@@ -20,7 +20,7 @@ class interface(object):
             self.generateTargetEndDays()
             self.generateTargetNames()
 
-            self.numOfForecasts = 28 # FOR NOW THIS IS HARDCODED AS a 28 day ahead AHEAD
+            self.numOfForecasts = 29 # FOR NOW THIS IS HARDCODED AS a 29 day ahead AHEAD bc the reference day is a monday
 
         self.location=location
         try:
@@ -85,6 +85,35 @@ class interface(object):
         self.forecast_date = forecastDate
         return forecastDate
 
+    def getClosestDay(self,numericDay): # Monday = 0, Sunday = 6
+        import datetime
+        from epiweeks import Week
+
+        from datetime import datetime as dt
+        today     = dt.today()
+
+        weekAhead = today
+        weekday = today.weekday()
+        while weekday != numericDay:
+            weekAhead = weekAhead + datetime.timedelta(days=1)
+            weekday = weekAhead.weekday()
+
+        weekBehind = today
+        weekday = today.weekday()
+        while weekday != numericDay:
+            weekBehind = weekBehind - datetime.timedelta(days=1)
+            weekday = weekBehind.weekday()
+        
+        distance2weekahead  = abs( today - weekAhead)
+        distance2weekbehind = abs( today - weekBehind)
+                
+        if distance2weekbehind < distance2weekahead:
+            self.forecast_date = weekBehind.strftime("%Y-%m-%d")
+            return weekBehind.strftime("%Y-%m-%d")
+        self.forecast_date = weekAhead.strftime("%Y-%m-%d")
+        return weekAhead.strftime("%Y-%m-%d")
+ 
+
     def generateTargetEndDates(self):
         import numpy as np
         
@@ -100,10 +129,10 @@ class interface(object):
         import datetime
         import pandas as pd
 
-        start = pd.to_datetime(self.thisWeek.enddate())
+        start = pd.to_datetime(self.forecast_date)
         
         target_end_days = []
-        for f in np.arange(1,28+1): # four days ahead
+        for f in np.arange(1,29+1): # four days ahead
             ted = (start+np.timedelta64(f,"D")).strftime("%Y-%m-%d")
             target_end_days.append(ted)
         self.target_end_days = target_end_days
@@ -116,7 +145,7 @@ class interface(object):
         targets = []
         trgts = ["case","death","hosp"]
         for trgt in trgts:
-            targets.append(["{:d} day ahead inc covid {:s}".format(ahead,trgt) for ahead in np.arange(1,28+1)])
+            targets.append(["{:d} day ahead inc covid {:s}".format(ahead,trgt) for ahead in np.arange(1,29+1)])
 
         self.targets = targets
         return targets

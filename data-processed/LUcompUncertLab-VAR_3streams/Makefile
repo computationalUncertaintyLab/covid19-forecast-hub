@@ -15,7 +15,7 @@ checkout_dev:
 #  This moves the git repo over to the ludev branch. 	
 	git checkout ludev
 
-expert_one_location:
+export_one_location:
 	export LOCATION=42
 
 create_location_specific_folder:
