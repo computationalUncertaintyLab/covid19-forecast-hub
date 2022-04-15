@@ -1,4 +1,6 @@
 #mcandrew
+# this uses the VAR model created in model.py to create sample forecasts
+# for a specific location indicated by the location argument passed in
 
 from interface import interface
 from model import VAR

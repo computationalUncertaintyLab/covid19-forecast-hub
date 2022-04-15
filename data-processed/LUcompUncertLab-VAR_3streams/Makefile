@@ -15,9 +15,6 @@ checkout_dev:
 #  This moves the git repo over to the ludev branch. 	
 	git checkout ludev
 
-export_one_location:
-	export LOCATION=42
-
 create_location_specific_folder:
 # creates this folder if it does not already exist
 	mkdir -p location_specific_forecasts
@@ -61,12 +58,12 @@ fromSamples2Quantiles:
 	echo "To QUANTILES = " ${LOCATION}
 	$(PYTHON) from_post_2_quantiles.py --LOCATION ${LOCATION} && echo "Mapped to quantiles complete"
 
-
 plotTrajectories:
 	echo "PLOT = " ${LOCATION}
 	$(PYTHON) plotTrajectories.py --LOCATION ${LOCATION} && echo "Plotted trajectories"
 
 compilePredictions:
+# Iterates through all necessary files for submission
 	echo "compiling predictions"
 	$(PYTHON) compilePredictions.py && echo "Compiled predictions"
 

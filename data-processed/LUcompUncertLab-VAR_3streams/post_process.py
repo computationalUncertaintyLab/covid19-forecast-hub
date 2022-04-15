@@ -1,4 +1,7 @@
 #mcandrew
+# takes in from __allpredictions from location specified from CL argument
+# sets lower bound at 0
+# casts target_end_date to datetime object, and formats it to YYYY-MM-DD
 
 import sys
 import numpy as np

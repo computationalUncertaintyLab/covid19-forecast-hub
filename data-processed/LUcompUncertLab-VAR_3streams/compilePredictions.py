@@ -1,3 +1,7 @@
+#piriya
+# iterates through all files with format [forecast_date]_LUcompUncertLab-VAR3Streams_FINAL_[FIPS].csv.gz
+# and compiles it into one csv file
+
 from interface import interface
 from glob import glob
 import pandas as pd
