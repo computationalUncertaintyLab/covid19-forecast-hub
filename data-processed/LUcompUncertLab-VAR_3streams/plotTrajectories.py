@@ -24,9 +24,16 @@ if __name__ == "__main__":
     
     quantiles = io.grab_recent_quantiles()
 
+
+    print(io.county_data)
+    
     if len(LOCATION) > 2:
         io.include_weekly_county_data()
+
+        LOCATION=int(LOCATION)
+        
         io.weeklycountydata = io.weeklycountydata.loc[io.weeklycountydata.location==int(LOCATION)]
+        io.county_data = io.county_data.loc[io.county_data.location==LOCATION]
 
         io.subset2location()
 
@@ -36,6 +43,7 @@ if __name__ == "__main__":
     else:
         io.include_weekly_data()
         io.weeklydata = io.weeklydata.loc[io.weeklydata.location==LOCATION]
+        
 
         io.subset2location()
 

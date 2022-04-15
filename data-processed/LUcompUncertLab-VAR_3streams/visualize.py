@@ -113,12 +113,14 @@ class viz(object):
                 extra_mws   = np.arange(N,N+4)
                 
             else:
-                rdata =self.rweeklydata
-                rdata = rdata.sort_values("end_date")
+                rdata =self.rdata
+                rdata = rdata.sort_values("date")
 
                 N = len(rdata)
                 rdata["mw"] = np.arange(0,N)
                 extra_mws   = np.arange(N,N+28)
+
+            print(rdata)
 
             target_quantiles = self.d.loc[self.d.target.str.contains("inc covid "+target[:3])]
             target_quantiles["quantile"] = target_quantiles["quantile"].astype(float)
@@ -126,10 +128,7 @@ class viz(object):
             plt.style.use("fivethirtyeight")
             fig,ax = plt.subplots()
 
-            #if col !="state_hosps":
             p = ax.plot(rdata["mw"],rdata[col],lw=1)
-            #else:
-            #    p = ax.plot(rdata["date"],rdata[col],lw=2)
 
             colors = [x.get_color() for x in p]
             color = colors[0]
@@ -142,18 +141,11 @@ class viz(object):
             mid = cis.loc[cis["quantile"]==0.50,"value"]
             hig = cis.loc[cis["quantile"]==0.975,"value"]
 
-            #if col !="state_hosps":
             ax.fill_between(extra_mws , low, hig, color = color, alpha=0.50 )
             ax.plot( extra_mws        , mid, color=color, lw=1,ls="-",label="Loc = {:s}".format( str(self.loc) ))
-            #else:
-            #    ax.fill_between(target_end_dates , low, hig, color = color, alpha=0.50 )
-            #    ax.plot( target_end_dates, mid, color=color, lw=1,ls="-",label="Loc = {:s}".format( str(self.loc) ))
 
             ax.tick_params(which="both",labelsize=6)
 
-            #if col =="state_hosps":
-            #    ax.set_xticks(ax.get_xticks()[::-1][::21][::-1])
-                
             ax.set_xlabel("Target end date",fontsize=8)
             ax.set_ylabel("Num. of confirmed covid {:s}".format(target),fontsize=8)
             ax.legend(fontsize=10)
