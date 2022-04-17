@@ -4,6 +4,8 @@
 
 from interface import interface
 import argparse
+import pandas as pd
+import datetime
 
 def fromSamples2Quantiles(dataPredictions):
 
@@ -37,7 +39,7 @@ if __name__ == "__main__":
 
     quantiles = fromSamples2Quantiles(io.predictions)
 
-    day = io.getForecastDate()
+    day = (pd.to_datetime(io.getForecastDate()) + datetime.timedelta(days=1)).strftime("%Y-%m-%d") #MOVE THIS FROM SUNDAY TO MONDAY
     quantiles.to_csv("./location_specific_forecasts/{:s}_LUcompUncertLab-VAR3Streams_FINAL__{:s}.csv.gz".format(day,io.fmtlocation)
                               ,header=True
                               ,index=False

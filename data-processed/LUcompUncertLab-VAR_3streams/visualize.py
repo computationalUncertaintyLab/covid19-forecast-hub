@@ -42,7 +42,7 @@ class viz(object):
             else:
                 rdata =self.rdata        
 
-            target_quantiles = self.d.loc[self.d.target.str.contains("inc covid "+target[:3])]
+            target_quantiles = self.d.loc[self.d.target.str.contains("inc "+target[:3])]
             target_quantiles["quantile"] = target_quantiles["quantile"].astype(float)
 
             plt.style.use("fivethirtyeight")
@@ -122,7 +122,7 @@ class viz(object):
 
             print(rdata)
 
-            target_quantiles = self.d.loc[self.d.target.str.contains("inc covid "+target[:3])]
+            target_quantiles = self.d.loc[self.d.target.str.contains("inc "+target[:3])]
             target_quantiles["quantile"] = target_quantiles["quantile"].astype(float)
 
             plt.style.use("fivethirtyeight")

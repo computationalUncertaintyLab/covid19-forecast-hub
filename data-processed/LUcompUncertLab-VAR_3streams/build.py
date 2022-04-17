@@ -19,7 +19,6 @@ if __name__ == "__main__":
     io.getClosestDay(6) # Reference will always be from the closest Sunday ( day 6).
         
     io.subset2location()
-
     
     forecast_model = VAR(io.modeldata)
     forecast_model.fit()

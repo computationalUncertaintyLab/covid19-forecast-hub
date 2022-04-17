@@ -20,7 +20,7 @@ class interface(object):
             self.generateTargetEndDays()
             self.generateTargetNames()
 
-            self.numOfForecasts = 29 # FOR NOW THIS IS HARDCODED AS a 29 day ahead AHEAD bc the reference day is a monday
+            self.numOfForecasts = 29 # FOR NOW THIS IS HARDCODED AS a 28 day ahead AHEAD bc we run on a sunday and then shift these days to the reference day of a monday
 
         self.location=location
         try:
@@ -75,13 +75,9 @@ class interface(object):
         dayofweek = today.weekday()
 
         thisWeek = Week.thisweek()
-        if dayofweek in {6,0}: # a SUNDAY or MONDAY
-            thisWeek = thisWeek-1
-        else:
-            pass
         self.thisWeek = thisWeek
         
-        forecastDate = ((thisWeek+1).startdate() + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+        forecastDate = thisWeek.startdate().strftime("%Y-%m-%d")
         self.forecast_date = forecastDate
         return forecastDate
 
@@ -93,7 +89,8 @@ class interface(object):
         today     = dt.today()
 
         weekAhead = today
-        weekday = today.weekday()
+        weekday   = today.weekday()
+
         while weekday != numericDay:
             weekAhead = weekAhead + datetime.timedelta(days=1)
             weekday = weekAhead.weekday()
@@ -109,16 +106,15 @@ class interface(object):
                 
         if distance2weekbehind < distance2weekahead:
             self.forecast_date = weekBehind.strftime("%Y-%m-%d")
-            return weekBehind.strftime("%Y-%m-%d")
+            return weekBehind.strftime("%Y-%m-%d") 
         self.forecast_date = weekAhead.strftime("%Y-%m-%d")
-        return weekAhead.strftime("%Y-%m-%d")
- 
+        return weekAhead.strftime("%Y-%m-%d") 
 
     def generateTargetEndDates(self):
         import numpy as np
         
         target_end_dates = []
-        for f in np.arange(1,4+1): # four weeks ahead
+        for f in np.arange(0,3+1): # four weeks ahead
             ted = ((self.thisWeek+int(f)).enddate()).strftime("%Y-%m-%d")
             target_end_dates.append(ted)
         self.target_end_dates = target_end_dates

@@ -22,7 +22,7 @@ if __name__ == "__main__":
     predictions = io.grab_recent_weekly_predictions()
 
     deathTargets = predictions.loc[ predictions.target.str.contains("death"),:]
-    deathTargets["week"]  = deathTargets.target.str.extract("(\d+) week.*").astype("int")
+    deathTargets["week"]  = deathTargets.target.str.extract("(\d+) wk.*").astype("int")
     
     def cumulative(d):
         import numpy as np

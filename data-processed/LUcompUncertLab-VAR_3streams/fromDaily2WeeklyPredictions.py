@@ -6,7 +6,22 @@ from interface import interface
 from model import VAR
 import pandas as pd
 
+
 import argparse
+
+def fromDaily2Weeks():
+    from epiweeks import Week
+    import pandas as pd
+
+    fromDaily2Weekly = {"target_end_date":[],"week":[]}
+    thisWeek = Week.thisweek()
+    for week in [1,2,3,4]:
+        for day in thisWeek.iterdates():
+            fromDaily2Weekly["target_end_date"].append(day.strftime("%Y-%m-%d"))
+            fromDaily2Weekly["week"].append( int(week) )
+        thisWeek+=1
+    return pd.DataFrame(fromDaily2Weekly)
+
 
 if __name__ == "__main__":
 
@@ -23,10 +38,9 @@ if __name__ == "__main__":
     predictions["day"]  = predictions.target.str.extract("(\d+).*").astype("int")
     predictions["hosp"] = predictions.target.str.match(".*hosp$")
     predictions["target_no_time"] = predictions.target.str.extract(".* day ahead (.*)")
-    
-    fromDaily2Weekly = pd.DataFrame({"day":[x+1 for x in range(27+1)], "week": [1]*7 + [2]*7  + [3]*7 + [4]*7})
 
-    predictions = predictions.merge(fromDaily2Weekly, on = ["day"])
+    fromDaily2Weekly = fromDaily2Weeks()
+    predictions = predictions.merge(fromDaily2Weekly, on = ["target_end_date"], how="left")
 
     hospitilizations     = predictions[predictions.hosp==True]
     not_hospitilizations = predictions[predictions.hosp==False]
@@ -43,8 +57,8 @@ if __name__ == "__main__":
     groupedPredictions = not_hospitilizations.groupby(["forecast_date","location","target_no_time","sample","week"]).apply(addUp)
     groupedPredictions = groupedPredictions.reset_index()
 
-    groupedPredictions["week_ahead"] = " week ahead "
-    groupedPredictions["target"] = groupedPredictions["week"].astype(str) + groupedPredictions["week_ahead"] + groupedPredictions["target_no_time"] 
+    groupedPredictions["week_ahead"] = " wk ahead "
+    groupedPredictions["target"] = groupedPredictions["week"].astype(int).astype(str) + groupedPredictions["week_ahead"] + groupedPredictions["target_no_time"] 
 
     groupedPredictions = groupedPredictions[["forecast_date","target_end_date","location","target","sample","value"]]
     hospitilizations   = hospitilizations[["forecast_date","target_end_date","location","target","sample","value"]]
