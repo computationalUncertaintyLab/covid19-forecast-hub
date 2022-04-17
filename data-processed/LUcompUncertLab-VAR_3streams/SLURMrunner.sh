@@ -15,9 +15,9 @@
 cd ${SLURM_SUBMIT_DIR} # cd to directory where you submitted the job
  
 # launch job
-# module load anaconda3
-# module load conda/biostats
-export PYTHONPATH=$PYTHONPATH:$HOME/pythonpkgs
+module load anaconda3
+module load conda/biostats
+#export PYTHONPATH=$PYTHONPATH:$HOME/pythonpkgs
 export LOCATION=${LOCATION}
 make runall
  
