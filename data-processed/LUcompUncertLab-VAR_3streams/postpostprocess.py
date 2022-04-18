@@ -30,7 +30,6 @@ if __name__ == "__main__":
         else:
             newloc.append(str(x).zfill(2))
 
-
     s = pd.Series(newloc)
     allPredictions['location'] = s
 
@@ -55,4 +54,19 @@ if __name__ == "__main__":
     toSubmit = pd.DataFrame(toSubmit)
     toSubmit = toSubmit.merge(allPredictions, on=["target", "location", "quantile"], how="left")
 
+    #cutting top to location populations
+    locationData = pd.read_csv("../../data-locations/locations.csv")
+
+    toSubmit = toSubmit.merge(locationData, on = "location")
+    toSubmit["value"] =  [ min(x,pop) for (x,pop) in zip( toSubmit["value"], toSubmit["population"] )  ]
+
+    toSubmit = toSubmit[ ["target", "location", "quantile", "forecast_date", "target_end_date", "value", "type"] ]
+
     toSubmit.to_csv(final_file, index=False)
+
+
+
+
+
+
+    
