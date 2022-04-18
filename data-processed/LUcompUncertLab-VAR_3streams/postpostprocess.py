@@ -10,11 +10,14 @@
 
 from interface import interface
 import pandas as pd
+import datetime
 
 if __name__ == "__main__":
 	io = interface(0)
-	final_file = "{:s}-LUcompUncertLab-VAR_3streams.csv".format(io.forecast_date)
-	file = "{:s}-LUcompUncertLab-VAR_3streams__ALMOSTFINAL.csv".format(io.forecast_date)
+        monday = (pd.to_datetime(io.forecast_date) + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+
+	final_file = "{:s}-LUcompUncertLab-VAR_3streams.csv".format(monday)
+	file = "{:s}-LUcompUncertLab-VAR_3streams__ALMOSTFINAL.csv".format(monday)
 	# read in csv
 	allPredictions = pd.read_csv(file)
 	
