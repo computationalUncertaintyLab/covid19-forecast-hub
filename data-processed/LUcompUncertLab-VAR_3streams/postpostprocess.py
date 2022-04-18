@@ -58,7 +58,7 @@ if __name__ == "__main__":
     locationData = pd.read_csv("../../data-locations/locations.csv")
 
     toSubmit = toSubmit.merge(locationData, on = "location")
-    toSubmit["value"] =  [ min(x,pop) for (x,pop) in zip( toSubmit["value"], toSubmit["population"] )  ]
+    toSubmit["value"] =  [ min(x,pop-1) for (x,pop) in zip( toSubmit["value"], toSubmit["population"] )  ]
 
     toSubmit = toSubmit[ ["target", "location", "quantile", "forecast_date", "target_end_date", "value", "type"] ]
 
