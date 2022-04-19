@@ -9,8 +9,8 @@ class dataprep(object):
         self.load_deaths()
         self.load_hosps()
         self.merge()
-        self.mergeCounties()
-        self.combineStateAndCounty()
+        #self.mergeCounties()
+        #self.combineStateAndCounty()
         
     def load_cases(self):
         import pandas as pd
@@ -63,6 +63,7 @@ class dataprep(object):
                 norm_loc.append(l.zfill(2))
         
         hosps = hosps.rename(columns = {"value":"hosps"})
+        hosps["location_name"] = hosps.location_name.replace("United States","US")
 
         self.hosps = hosps
 
