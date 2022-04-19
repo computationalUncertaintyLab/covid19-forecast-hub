@@ -9,8 +9,8 @@ class dataprep(object):
         self.load_deaths()
         self.load_hosps()
         self.merge()
-        #self.mergeCounties()
-        #self.combineStateAndCounty()
+        self.mergeCounties()
+        self.combineStateAndCounty()
         
     def load_cases(self):
         import pandas as pd
