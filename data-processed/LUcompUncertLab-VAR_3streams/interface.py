@@ -39,7 +39,10 @@ class interface(object):
     def subset2location(self):
     
         def subset(d):
-            return d.loc[d.location.isin([str(self.location)])]
+            if self.location !="US":
+                return d.loc[d.location.isin(["{:02d}".format(self.location) ])] #US turns this column into a string
+            else:
+                return d.loc[d.location.isin([str(self.location)])] #US turns this column into a string
         
         # because county locations are all integers, so we don't have to cast as string
         def csubset(d):
