@@ -22,6 +22,15 @@ class dataprep(object):
 
         cases_counties = cases_counties.rename(columns = {"value":"cases"})
         cases = cases.rename(columns = {"value":"cases"})
+
+        norm_loc = []
+        for l in cases.location:
+            if len(l) == 2:
+                norm_loc.append(l)
+            else:
+                norm_loc.append(l.zfill(2))
+        cases.location = norm_loc
+
         self.cases = cases
 
         # strips the last three digits from the FIPS to get either 1 or 2 digits, then left fills with 0 if 1 digit
