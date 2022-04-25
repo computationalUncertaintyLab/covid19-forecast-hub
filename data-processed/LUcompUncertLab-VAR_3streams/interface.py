@@ -37,7 +37,6 @@ class interface(object):
         self.weeklycountydata = pd.read_csv("threestreams__weekly__county.csv.gz")
             
     def subset2location(self):
-    
         def subset(d):
             if self.location !="US":
                 return d.loc[d.location.isin(["{:02d}".format(int(self.location)) ])] #US turns this column into a string
