@@ -63,7 +63,7 @@ class dataprep(object):
                 norm_loc.append(l.zfill(2))
         
         hosps = hosps.rename(columns = {"value":"hosps"})
-        hosps["location_name"] = hosps.location_name.replace("United States","US")
+        #hosps["location_name"] = hosps.location_name.replace("United States","US")
 
         self.hosps = hosps
 
