@@ -11,6 +11,7 @@ import datetime
 if __name__ == "__main__":
 
     io = interface(0)
+    io.getClosestDay(6) # Reference will always be from the closest Sunday ( day 6).
         
     monday = (pd.to_datetime(io.forecast_date) + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
     almost_final_filename = "{:s}-LUcompUncertLab-VAR_3streams__ALMOSTFINAL.csv".format(monday)
