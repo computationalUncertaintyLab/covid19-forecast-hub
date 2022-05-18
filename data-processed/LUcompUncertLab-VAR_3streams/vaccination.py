@@ -8,19 +8,24 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 if __name__ == "__main__":
-    threestreamsdf = pd.read_csv('s1695RizU6ih.csv')
+
+    threestreamsdf = pd.read_csv('threestreams__county.csv.gz')
+    
     threestreamsdf1 = threestreamsdf
-    threestreamsdf1['location'] = threestreamsdf1['location'].astype(str)
-    threestreamsdf1['state_fip'] = threestreamsdf1['location'].str[:2]
-    threestreamsdf1['date'] = pd.to_datetime(threestreamsdf1['date'])
+    threestreamsdf1['location']   = threestreamsdf1['location'].astype(str)
+    threestreamsdf1['state_fip']  = threestreamsdf1['location'].str[:2]
+    threestreamsdf1['date']       = pd.to_datetime(threestreamsdf1['date'])
     threestreamsdf1 = threestreamsdf1[(threestreamsdf1['date'] >= '2020-12-13') & (threestreamsdf1['date'] <= '2022-04-29')]
-    threestreamsdf3 = threestreamsdf1.groupby('state_fip').sum()
-    print(threestreamsdf3)
-    vaccination_df= pd.read_csv('COVID-19_Vaccinations_in_the_United_States_County.csv')
-    vaccination_df.drop(['Series_Complete_Pop_Pct','Completeness_pct','MMWR_week','Administered_Dose1_Recip_5Plus','Administered_Dose1_Recip_5PlusPop_Pct','Administered_Dose1_Recip_12Plus','Administered_Dose1_Recip_12PlusPop_Pct','Administered_Dose1_Recip_18Plus','Administered_Dose1_Recip_18PlusPop_Pct','Administered_Dose1_Recip_65Plus','Administered_Dose1_Recip_65PlusPop_Pct','Series_Complete_5PlusPop_Pct_SVI','Series_Complete_5to17Pop_Pct_SVI','Series_Complete_12PlusPop_Pct_SVI','Series_Complete_18PlusPop_Pct_SVI','Series_Complete_65PlusPop_Pct_SVI','Booster_Doses_12Plus','Booster_Doses_12Plus_Vax_Pct','Booster_Doses_18Plus','Booster_Doses_18Plus_Vax_Pct','Booster_Doses_50Plus','Booster_Doses_50Plus_Vax_Pct','Booster_Doses_65Plus','Booster_Doses_65Plus_Vax_Pct','Series_Complete_5Plus','Series_Complete_5PlusPop_Pct','Series_Complete_5to17','Series_Complete_5to17Pop_Pct','Series_Complete_12Plus','Series_Complete_12PlusPop_Pct','Series_Complete_18Plus','Series_Complete_18PlusPop_Pct','Series_Complete_65Plus','Series_Complete_65PlusPop_Pct','Series_Complete_5PlusPop_Pct_UR_Equity','Series_Complete_5to17Pop_Pct_UR_Equity','Series_Complete_12PlusPop_Pct_UR_Equity','Series_Complete_18PlusPop_Pct_UR_Equity','Series_Complete_65PlusPop_Pct_UR_Equity','Booster_Doses_12PlusVax_Pct_SVI','Booster_Doses_18PlusVax_Pct_SVI','Booster_Doses_65PlusVax_Pct_SVI','Booster_Doses_12PlusVax_Pct_UR_Equity','Booster_Doses_18PlusVax_Pct_UR_Equity','Booster_Doses_65PlusVax_Pct_UR_Equity','Census2019_5PlusPop','Census2019_5to17Pop','Census2019_12PlusPop','Census2019_18PlusPop','Census2019_65PlusPop','Metro_status','Census2019','Booster_Doses_Vax_Pct_UR_Equity','Booster_Doses_Vax_Pct_SVI','Series_Complete_Pop_Pct_UR_Equity','Series_Complete_Pop_Pct_SVI','SVI_CTGY','Administered_Dose1_Recip','Administered_Dose1_Pop_Pct','Booster_Doses','Booster_Doses_Vax_Pct'], inplace=True, axis = 1)
-    vaccination_df['state_fip'] = vaccination_df['FIPS'].str[:2]
-    vaccination_df_5 = vaccination_df[vaccination_df['Date'] == '04/29/2022']
+    
+    threestreamsdf3 = threestreamsdf1.groupby(['state_fip','date']).sum()
+
+    vaccination_df= pd.read_csv('allVaccinationData.csv')
+    vaccination_df = vaccination_df.loc[:, [ "date","fips","recip_county", "recip_state", "series_complete_yes"]]
+
+    vaccination_df['state_fip'] = vaccination_df['fips'].str[:2]
+    vaccination_df_5 = vaccination_df[vaccination_df['date'] == '04/29/2022']
     vaccination_df_6 = vaccination_df_5.groupby('state_fip').sum()
+    
     #we dont know what to do with the state fip 60 and 61 in threestreams dataframe and what to do with state fip 66 and UN in the vaccination dataframe
     #merged_df = pd.merge(threestreamsdf3, vaccination_df_6)
     #vaccination_df_2 = vaccination_df.groupby('state_fip').sum()
