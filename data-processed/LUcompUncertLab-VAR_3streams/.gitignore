@@ -1,3 +1,6 @@
 **/build
 .gitignore
 **/location_specific_forecasts
+**/viz
+*.csv.gz
+*.ipynb
