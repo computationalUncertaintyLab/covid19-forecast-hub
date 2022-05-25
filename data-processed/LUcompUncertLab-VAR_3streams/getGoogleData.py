@@ -11,7 +11,7 @@ import covidcast
 
 if __name__ == "__main__":
 
-    county = covidcast.signal(data_source="google-symptoms",signal="s01_raw_search", geo_type="county", start_day = date(2022,4,22))
+    county = covidcast.signal(data_source="google-symptoms",signal="s01_raw_search", geo_type="county", start_day = date(2020,1,22))
 
     data = pd.DataFrame()
     data["date"] = county["time_value"]
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     data["location_name"] = covidcast.fips_to_name(data["location"])
     data["value"] = county["value"]
 
-    state = covidcast.signal(data_source="google-symptoms",signal="s01_raw_search", geo_type="state", start_day = date(2022,4,22))
+    state = covidcast.signal(data_source="google-symptoms",signal="s01_raw_search", geo_type="state", start_day = date(2020,1,22))
 
     data2 = pd.DataFrame()
     data2["date"] = state["time_value"]
