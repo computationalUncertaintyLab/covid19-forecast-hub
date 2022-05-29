@@ -9,10 +9,6 @@ class interface(object):
         else:
             self.data          = pd.read_csv("threestreams__state.csv.gz") 
             self.county_data   = pd.read_csv("threestreams__county.csv.gz")
-            self.centered_data = pd.read_csv("centered_std_threestreams.csv.gz")
-            self.running_means = pd.read_csv("running_mean_threestreams.csv.gz")
-            self.stds          = pd.read_csv("stds.csv.gz")
-
             self.locations     = sorted(self.data.location.unique())
 
             self.buildDataForModel()
