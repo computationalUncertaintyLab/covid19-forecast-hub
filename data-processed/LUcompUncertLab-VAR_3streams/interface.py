@@ -47,8 +47,6 @@ class interface(object):
             self.data      = csubset(self.county_data)
         else:
             self.data      = subset(self.data)
-        self.centered_data = subset(self.centered_data)
-        self.running_means  = subset(self.running_means)
 
         #self.locations = locations 
 
@@ -57,7 +55,6 @@ class interface(object):
     def buildDataForModel(self):
         import numpy as np
         
-        #y = np.array(self.centered_data.drop(columns=["location","location_name"]).set_index("date"))
         y = np.array(self.data.drop(columns=["location","location_name"]).set_index("date"))
         
         self.modeldata = y.T
@@ -168,31 +165,6 @@ class interface(object):
 
         self.dataPredictions = dataPredictions
         return dataPredictions
-
-    def un_center(self):
-        stds = self.transform_stds_long()
-        running_means = self.transform_running_means_long()
-
-        predictions = self.dataPredictions
-
-        # create a fake target
-        def fromtarget2T(x):
-            if "case" in x:
-                return "cases"
-            elif "hosp" in x:
-                return "hosps"
-            else:
-                return "deaths"
-        predictions["T"] = [ fromtarget2T(_) for _ in predictions.target]
-
-        key = ["location","T"]
-        predictions = predictions.merge( stds, on = key )
-        predictions = predictions.merge(running_means, on = key)
-
-        predictions = predictions.drop(columns=["T"])
-
-        predictions.value = predictions["value"]*predictions["std"] + predictions["mean"]
-        self.dataPredictions = predictions
 
     def fromSamples2Quantiles(self):
         
