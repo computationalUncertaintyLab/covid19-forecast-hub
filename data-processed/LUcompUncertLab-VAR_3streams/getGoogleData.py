@@ -18,7 +18,7 @@ import covidcast
 if __name__ == "__main__":
 
     # import previous data
-    google = None
+    google = pd.DataFrame()
     try:
         print("Importing Past Data")
         google = pd.read_csv("./AllGoogleData.csv")
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         break
 
     # agg and save
-    if google == None:
+    if google.empty:
         data = pd.concat([data, pd.DataFrame.from_dict(dic)], ignore_index=True)
     else:
         data = pd.concat([google, data, pd.DataFrame.from_dict(dic)], ignore_index=True)
