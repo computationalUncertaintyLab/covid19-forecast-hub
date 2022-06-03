@@ -1,6 +1,11 @@
 #berlin
 
 # TODO: Add the 5 random missing islands
+# 1. 60,American Samoa
+# 2. 66,Guam
+# 3. 69,Northern Mariana Islands (nice)
+# 4. 72,Puerto Rico
+# 5. 78,Virgin Islands
 
 import numpy as np
 import pandas as pd
@@ -21,7 +26,7 @@ if __name__ == "__main__":
 
     except:
         print("No past data found")
-        start_date = date(2022,4,22)
+        start_date = date(2020,1,22)
 
     # find date of most recent data
 
@@ -71,11 +76,40 @@ if __name__ == "__main__":
         state = sub_google.loc[mask]
         state["location"] = state["location"].astype(int)
         
-        # add to df
+        # Add US and 5 missing randos
+        # sorry for the gross code :(
+
+        val = state["value"].mean()
+
         dic["date"].append(date)
         dic["location"].append("US")
         dic["location_name"].append("US")
-        dic["value"].append(state["value"].mean())
+        dic["value"].append(val)
+
+        dic["date"].append(date)
+        dic["location"].append("60")
+        dic["location_name"].append("American Samoa")
+        dic["value"].append(val)
+
+        dic["date"].append(date)
+        dic["location"].append("66")
+        dic["location_name"].append("Guam")
+        dic["value"].append(val)
+
+        dic["date"].append(date)
+        dic["location"].append("69")
+        dic["location_name"].append("Northern Mariana Islands")
+        dic["value"].append(val)
+
+        dic["date"].append(date)
+        dic["location"].append("72")
+        dic["location_name"].append("Puerto Rico")
+        dic["value"].append(val)
+
+        dic["date"].append(date)
+        dic["location"].append("78")
+        dic["location_name"].append("Virgin Islands")
+        dic["value"].append(val)
 
         # set up list of locations that need to be filled
         google_locations = pd.Index(sub_google["location"].unique())
