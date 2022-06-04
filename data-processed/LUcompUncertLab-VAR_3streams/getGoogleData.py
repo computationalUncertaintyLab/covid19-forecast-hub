@@ -1,12 +1,5 @@
 #berlin
 
-# TODO: Add the 5 random missing islands
-# 1. 60,American Samoa
-# 2. 66,Guam
-# 3. 69,Northern Mariana Islands (nice)
-# 4. 72,Puerto Rico
-# 5. 78,Virgin Islands
-
 import numpy as np
 import pandas as pd
 
@@ -22,11 +15,12 @@ if __name__ == "__main__":
     try:
         print("Importing Past Data")
         google = pd.read_csv("./AllGoogleData.csv")
+        # set start date to last date in data plus 1 day
         start_date = datetime.strptime(max(google["date"]), '%Y-%m-%d').date() + timedelta(days=1)
 
     except:
         print("No past data found")
-        start_date = date(2020,1,22)
+        start_date = date(2020,2,22)
 
     # find date of most recent data
 
@@ -66,6 +60,7 @@ if __name__ == "__main__":
     # dict where data is going to go
     dic = {"date":[], "location":[], "location_name":[], "value":[]}
 
+    print("Generating Missing Data")
     # for every date in the df
     for d in data["date"].unique():
         # loc to date
@@ -86,17 +81,17 @@ if __name__ == "__main__":
         dic["location_name"].append("US")
         dic["value"].append(val)
 
-        dic["date"].append(date)
+        dic["date"].append(d)
         dic["location"].append("60")
         dic["location_name"].append("American Samoa")
         dic["value"].append(val)
 
-        dic["date"].append(date)
+        dic["date"].append(d)
         dic["location"].append("66")
         dic["location_name"].append("Guam")
         dic["value"].append(val)
 
-        dic["date"].append(date)
+        dic["date"].append(d)
         dic["location"].append("69")
         dic["location_name"].append("Northern Mariana Islands")
         dic["value"].append(val)
@@ -117,12 +112,12 @@ if __name__ == "__main__":
         
         # for every location append the state level number
         for l in diff:
+            # locate the state value for that county 
             value = state.loc[state["location"] == int(int(l)/1000)].iat[0,3]
             dic["date"].append(d)
             dic["location"].append(str(l))
             dic["location_name"].append(covidcast.fips_to_name(l)[0])
             dic["value"].append(value)
-        break
 
     # agg and save
     if google.empty:
