@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
         val = state["value"].mean()
 
-        dic["date"].append(date)
+        dic["date"].append(d)
         dic["location"].append("US")
         dic["location_name"].append("US")
         dic["value"].append(val)
@@ -96,12 +96,12 @@ if __name__ == "__main__":
         dic["location_name"].append("Northern Mariana Islands")
         dic["value"].append(val)
 
-        dic["date"].append(date)
+        dic["date"].append(d)
         dic["location"].append("72")
         dic["location_name"].append("Puerto Rico")
         dic["value"].append(val)
 
-        dic["date"].append(date)
+        dic["date"].append(d)
         dic["location"].append("78")
         dic["location_name"].append("Virgin Islands")
         dic["value"].append(val)
