@@ -57,4 +57,12 @@ if __name__ == "__main__":
     print(len(fourstreams_s))
     print(fourstreams_s.isna().sum())
     #so our fourstream_s data is now ready to be added and it has no nan values
-    
+    fourstreams_s.drop("population", axis = 1, inplace  = True)
+    print(fourstreams_s.head())
+    print(fourstreams_s.nunique())
+    print(fourstreams_s.info())
+    print(len(fourstreams_s))
+    print(fourstreams_s.isna().sum())
+    #we export it as a csv
+    fourstreams_s.to_csv('fourstreamsstate.csv', index=False)
+
