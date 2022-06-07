@@ -7,8 +7,8 @@ class interface(object):
         if data is None:
             pass
         else:
-            self.data          = pd.read_csv("threestreams__state.csv.gz") 
-            self.county_data   = pd.read_csv("threestreams__county.csv.gz")
+            self.data          = pd.read_csv("fourstreams__state.csv.gz") 
+            self.county_data   = pd.read_csv("fourstreams__county.csv.gz")
             self.locations     = sorted(self.data.location.unique())
 
             self.buildDataForModel()
@@ -26,11 +26,11 @@ class interface(object):
 
     def include_weekly_data(self):
         import pandas as pd
-        self.weeklydata = pd.read_csv("threestreams__weekly.csv.gz")
+        self.weeklydata = pd.read_csv("fourstreams__weekly.csv.gz")
 
     def include_weekly_county_data(self):
         import pandas as pd
-        self.weeklycountydata = pd.read_csv("threestreams__weekly__county.csv.gz")
+        self.weeklycountydata = pd.read_csv("fourstreams__weekly__county.csv.gz")
             
     def subset2location(self):
         def subset(d):

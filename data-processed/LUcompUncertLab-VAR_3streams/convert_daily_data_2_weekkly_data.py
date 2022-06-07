@@ -39,10 +39,11 @@ if __name__ == "__main__":
         cases =  x.cases.sum()
         hosps =  x.hosps.sum() 
         deaths = x.deaths.sum()
+        googles = x.googles.sum()
 
-        return pd.Series({"cases":cases,"deaths":deaths,"hosps":hosps})
+        return pd.Series({"cases":cases,"deaths":deaths,"hosps":hosps, "googles":googles})
         
     weekly_date = data.groupby( ["location", "location_name", "start_date", "end_date", "EW"]).apply(aggregate)
     weekly_date = weekly_date.reset_index()
 
-    weekly_date.to_csv("threestreams__weekly.csv.gz", compression = "gzip")
+    weekly_date.to_csv("fourstreams__weekly.csv.gz", compression = "gzip")

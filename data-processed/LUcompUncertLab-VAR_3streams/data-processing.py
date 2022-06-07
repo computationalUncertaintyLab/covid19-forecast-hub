@@ -8,6 +8,7 @@ class dataprep(object):
         self.load_cases()
         self.load_deaths()
         self.load_hosps()
+        self.load_googles()
         self.merge()
         self.mergeCounties()
         self.combineStateAndCounty()
@@ -76,12 +77,53 @@ class dataprep(object):
 
         self.hosps = hosps
 
+
+    def load_googles(self):
+        import pandas as pd
+        from datetime import date, datetime, timedelta
+        googles = pd.read_csv("AllGoogleData.csv.gz", compression="gzip")
+        googles.location = googles.location.astype(str)
+
+        #adjust dates 
+        cases = pd.read_csv("../../data-truth/truth-Incident Cases.csv")
+        googles_date = datetime.strptime(max(googles["date"]), '%Y-%m-%d').date()
+        ref_date = datetime.strptime(max(cases["date"]), '%Y-%m-%d').date()
+        time_delta = ref_date - googles_date
+        googles['date'] = googles["date"].apply(lambda d: datetime.strptime(d, '%Y-%m-%d').date() + time_delta)
+        googles['date'] = googles['date'].astype(str)
+
+        # we need to separate cases at the state level from cases at county level
+        googles_counties = googles.loc[ [True if len(_)>=4 else False for _ in googles.location] ,:]
+
+        googles_counties = googles_counties.rename(columns = {"value":"googles"})
+        googles = googles.rename(columns = {"value":"googles"})
+
+        norm_loc = []
+        for l in googles.location:
+            if len(l) == 2:
+                norm_loc.append(l)
+            else:
+                norm_loc.append(l.zfill(2))
+        googles.location = norm_loc
+
+        self.googles = googles
+
+        # strips the last three digits from the FIPS to get either 1 or 2 digits, then left fills with 0 if 1 digit
+        state_codes = googles_counties.apply(lambda x: x['location'][:-3].zfill(2), axis=1)
+
+        # appends to the dataframe
+        googles_counties.insert(len(googles_counties.columns), 'state', state_codes)
+
+        self.googles_counties = googles_counties
+
+
+
     def merge(self):
         key = ["date","location","location_name"]
         d = self.cases.merge(self.deaths, on = key)
         d = d.merge(self.hosps, on = key )
-
-        self.threestreams_state = d
+        d = d.merge(self.googles, on = key )
+        self.fourstreams_state = d
         return d
 
     def mergeCounties(self):
@@ -89,31 +131,33 @@ class dataprep(object):
         d = self.ccases_counties.merge(self.deaths, left_on=['date', 'state'], right_on=['date', 'location'], suffixes=(None, "_d"))
         # merge the county cases with state hosps
         d = d.merge(self.hosps, left_on=['date', 'state'], right_on=['date', 'location'], suffixes=(None, "_h"))
-        d = d.drop(columns=['state', 'location_d', 'location_name_d', 'location_h', 'location_name_h'])
+        d = d.merge(self.googles, left_on=['date', 'state'], right_on=['date', 'location'], suffixes=(None, "_g"))
+        d = d.drop(columns=['state', 'location_d', 'location_name_d', 'location_h', 'location_name_h', 'location_g', 'location_name_g'])
 
-        self.threestreams_county = d
+        self.fourstreams_county = d
         return d
 
     def combineStateAndCounty(self):
         import pandas as pd
-        # append county threestreams to state threestreams
-        d = pd.concat([self.threestreams_state, self.threestreams_county])
+        # append county fourstreams to state fourstreams
+        d = pd.concat([self.fourstreams_state, self.fourstreams_county])
 
-        # store it in instance variable threestreams
-        self.threestreams = d
+        # store it in instance variable fourstreams
+        self.fourstreams = d
         
-        # rename columns in threestreams_county for clarity
-        self.threestreams_county = self.threestreams_county.rename(columns={"cases":"county_cases", "deaths":"state_deaths", "hosps":"state_hosps"})
+        # rename columns in fourstreams_county for clarity
+        self.fourstreams_county = self.fourstreams_county.rename(columns={"cases":"county_cases", "deaths":"state_deaths", "hosps":"state_hosps", "googles":"county_googles"})
 
     def write(self):
         def tocsv(x,f):
             x.to_csv(f,index=False,compression = "gzip")
-        tocsv(self.threestreams_state,"threestreams__state.csv.gz")
-        tocsv(self.threestreams_county,"threestreams__county.csv.gz")
-        tocsv(self.threestreams,"threestreams.csv.gz")
+        tocsv(self.fourstreams_state,"fourstreams__state.csv.gz")
+        tocsv(self.fourstreams_county,"fourstreams__county.csv.gz")
+        tocsv(self.fourstreams,"fourstreams.csv.gz")
         tocsv(self.cases,"cases.csv.gz")
         tocsv(self.deaths,"deaths.csv.gz")
         tocsv(self.hosps,"hosps.csv.gz")
+        tocsv(self.googles,"googles.csv.gz")
         
 if __name__ == "__main__":
 

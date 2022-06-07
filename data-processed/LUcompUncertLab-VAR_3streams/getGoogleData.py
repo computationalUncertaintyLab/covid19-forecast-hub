@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
         dic["date"].append(d)
         dic["location"].append("US")
-        dic["location_name"].append("US")
+        dic["location_name"].append("United States")
         dic["value"].append(val)
 
         dic["date"].append(d)
