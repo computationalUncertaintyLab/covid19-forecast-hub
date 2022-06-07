@@ -14,7 +14,7 @@ if __name__ == "__main__":
     google = pd.DataFrame()
     try:
         print("Importing Past Data")
-        google = pd.read_csv("./AllGoogleData.csv")
+        google = pd.read_csv("./AllGoogleData.csv.gz")
         # set start date to last date in data plus 1 day
         start_date = datetime.strptime(max(google["date"]), '%Y-%m-%d').date() + timedelta(days=1)
 
@@ -125,4 +125,4 @@ if __name__ == "__main__":
     else:
         data = pd.concat([google, data, pd.DataFrame.from_dict(dic)], ignore_index=True)
 
-    data.to_csv("AllGoogleData.csv", index=False)
+    data.to_csv("AllGoogleData.csv.gz", index=False, compression="gzip")
