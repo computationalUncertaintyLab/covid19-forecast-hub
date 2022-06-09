@@ -14,7 +14,6 @@ if __name__ == "__main__":
     threestreamsdf__state  = pd.read_csv('threestreams__state.csv.gz')
 
     threestreamsdf = threestreamsdf__state.append(threestreamsdf__county)
-
     
     threestreamsdf1 = threestreamsdf
     threestreamsdf1['location'] = threestreamsdf1['location'].astype(str)
@@ -42,7 +41,7 @@ if __name__ == "__main__":
     #vaccination_df = vaccination_df[~vaccination_df['state_fip'].isin(lis1)]
 
     #importing the location csv
-    location_df = pd.read_csv('../../data-locations/locations.csv') 
+    location_df =pd.read_csv('../../data-locations/locations.csv')  
 
     location_df_state  = location_df[location_df['abbreviation'].notna()]
     location_df_county = location_df[location_df['abbreviation'].isna()]
