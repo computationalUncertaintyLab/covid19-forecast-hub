@@ -26,14 +26,14 @@ if __name__ == "__main__":
     vaccine_state = vaccine.copy()
 
     #--import locations csv to help determine FIPS
-    locations = pd.read_csv('../../data-locations/locations.csv')
+    locations = pd.read_csv('../../data-locations/locations.csv') 
     locations = locations.rename(columns={"location":"replacement_location"})
 
     vaccine_state = vaccine_state.merge( locations
                                          ,left_on = ["location_name"]
                                          ,right_on=["abbreviation"], how="left" )
     def replaceUnknownWithStateFip(x):
-        if x.location=="UN":
+        if x.location=="UN" or x.location=="UNK":
             return x.replacement_location
         else:
             return x.location
@@ -46,14 +46,20 @@ if __name__ == "__main__":
     
     #--add up vaccine counts over counties
     def addUp(x):
-        return pd.Series({"vac_count": sum(x.vac_count)})
+        return pd.Series({"vac_count": sum(x.vac_count.fillna(0))})
     vaccine_state = vaccine_state.groupby(["date","state_fip","recip_state"]).apply(addUp)
     vaccine_state = vaccine_state.reset_index()
 
     #--compute US level vaccine counts
-    # groupby the same list above but exclude state_fip and recip_state
-    # FOR PARTH
-    # add rows to vaccine_state that include US level vaccine counts.
+    vaccine_us = vaccine_state.fillna(0).groupby(["date"]).apply(addUp)
+    vaccine_us["state_fip"]  ="US"
+    vaccine_us["recip_state"]="US"
+    vaccine_us = vaccine_us.reset_index()
+
+    vaccine_us["date"]   = pd.to_datetime(vaccine_us.date)
+    
+    #--add US quantities to state
+    vaccine_state = vaccine_state.append(vaccine_us)
     
     #--add in a location name which will be the state name
     vaccine_state["location_name"] = vaccine_state.recip_state
@@ -94,8 +100,13 @@ if __name__ == "__main__":
     _3streams = _3streams.merge(unique_location_and_replacements, on = ["location"])
     _3streams["location"] = _3streams.reformatted_location
     _3streams = _3streams.drop(columns=["reformatted_location"])
-    
-    vaccine["location"] = vaccine.location.astype(int).astype(str)
+
+    def removeLeadingZero(x):
+        try:
+            return str(int(x.location))
+        except:
+            return x.location
+    vaccine["location"] = vaccine.apply(removeLeadingZero,1)
     
     #--(finally) merge in vaccine data
     _4streams = _3streams.merge(vaccine, on = ["date","location"], how="left")
@@ -103,8 +114,79 @@ if __name__ == "__main__":
 
     #--create a dataframe with location, proportion, and replacement_vaccine.
     
+    #--state level replacement
+    vaccine_state["date"] = pd.to_datetime(vaccine_state.date)
+    vaccine_us_replacement = vaccine_us[["date","vac_count"]].rename(columns={"vac_count":"us_vac_count"})
     
-
-    #print(set(_3streams.location.unique() ) - set(_4streams.location.unique()))
-
+    #vaccine_us_replacement = vaccine_us_replacement.merge(locations, on = [])
     
+    vaccine_state = vaccine_state.merge(vaccine_us_replacement, on = ["date"])
+    
+    us_population = float(locations.loc[locations.location=="US","population"].values)
+
+    locations = locations[["location","population"]]
+    locations["state"] = [1 if len(x)==2 else 0 for x in locations.location.values]
+
+    #--split pops into state and county
+    states   = locations.loc[locations.state==1]
+    counties = locations.loc[locations.state==0]
+
+    locations = locations.drop(columns=["state"])
+
+    #--add state location to merge in state populations
+    counties['state_location'] = [str(x)[:2] for x in counties.location]
+
+    locations = locations.rename(columns = {"population":"state_population", "location":"state_location"})
+    counties = counties.merge(locations, on = ["state_location"] )
+
+    #--compute population proportions
+    counties["prop"] = counties["population"] / counties["state_population"]
+    states["prop"]   = states["population"] / us_population 
+
+    counties = counties[["location","prop"]]
+    states   = states[["location","prop"]]
+    
+    location_props = counties.append(states)
+    location_props["location"] = location_props["location"].apply(reformat,1)
+
+    #--add in proprotion
+    _4streams = _4streams.merge( location_props, on = ["location"] )
+    
+    #--merge in the population proportions
+    def levelup(x):
+        loc = str(x)
+        if len(loc)<=1:
+            return "US"
+        return loc[:2]  
+    _4streams["levelup"] = _4streams.location.apply(levelup,1)
+
+    vaccine_replace = vaccine.rename(columns={"vac_count":"replacement_count"})
+    vaccine_replace = vaccine_replace[["date","location","replacement_count"]]
+    
+    _4streams = _4streams.merge( vaccine_replace, left_on = ["date","levelup"], right_on = ["date","location"], how="left"  )
+
+    #--write out the missing rows
+    missing_rows = _4streams.loc[np.isnan(_4streams.vacc_count)]
+    missing_rows.to_csv("missing_rows.csv")
+    
+    #--impute missing vaccine counts 
+    def impute(x):
+        if np.isnan(x.vac_count):
+            return x.prop*x.replacement_count
+        else:
+            return x.vac_count
+    _4streams["vac_count"] = _4streams.apply(impute,1)
+
+    #--cleanup columns
+    _4streams = _4streams[ ["date","location_x","location_name","cases","deaths","hosps","vac_count"] ]
+    _4streams = _4streams.rename(columns={"location_x":"location"})
+    
+    #--restrict to only FIPS in the locations.csv file
+    locations = pd.read_csv('../../data-locations/locations.csv')
+    locations = locations[["location"]]
+
+    #--reformat locations
+    locations["location"] = locations.location.apply(reformat,1)
+    
+    _4streams = _4streams.merge(locations, on = ["location"])
+    _4streams.to_csv("_4streams.csv")
