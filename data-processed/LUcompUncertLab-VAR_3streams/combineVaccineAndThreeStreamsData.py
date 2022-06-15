@@ -15,9 +15,9 @@ if __name__ == "__main__":
     _3streams = _3streams__state.append(_3streams__county)
     
     #--import vaccine data
-    vaccine = pd.read_csv('allVaccinationData.csv.gz')
-    vaccine = vaccine.loc[:, ["date","fips","recip_county", "recip_state", "series_complete_yes"]] #subset to column we care about
-    vaccine = vaccine.rename(columns = {'recip_county':'location_name'
+    vaccine1 = pd.read_csv('allVaccinationData.csv.gz')
+    vaccine1 = vaccine1.loc[:, ["date","fips","recip_county", "recip_state", "series_complete_yes"]] #subset to column we care about
+    vaccine = vaccine1.rename(columns = {'recip_county':'location_name'
                                         ,'fips':'location'
                                         ,'series_complete_yes':'vac_count'})
 
@@ -28,7 +28,6 @@ if __name__ == "__main__":
     #--import locations csv to help determine FIPS
     locations = pd.read_csv('../../data-locations/locations.csv') 
     locations = locations.rename(columns={"location":"replacement_location"})
-
     vaccine_state = vaccine_state.merge( locations
                                          ,left_on = ["location_name"]
                                          ,right_on=["abbreviation"], how="left" )
@@ -43,13 +42,11 @@ if __name__ == "__main__":
 
     #--clean up columns from vaccine state unknown replacement
     vaccine_state = vaccine_state[["date","state_fip","recip_state","vac_count"]]
-    
     #--add up vaccine counts over counties
     def addUp(x):
         return pd.Series({"vac_count": sum(x.vac_count.fillna(0))})
     vaccine_state = vaccine_state.groupby(["date","state_fip","recip_state"]).apply(addUp)
     vaccine_state = vaccine_state.reset_index()
-
     #--compute US level vaccine counts
     vaccine_us = vaccine_state.fillna(0).groupby(["date"]).apply(addUp)
     vaccine_us["state_fip"]  ="US"
@@ -69,7 +66,6 @@ if __name__ == "__main__":
 
     #--append togethe the county and state level vaccine data
     vaccine = vaccine.append(vaccine_state)
-
     #--exclude locations that are not targets for forecasting
     locations = locations.rename( columns = {"replacement_location":"location"} )
     vaccine = vaccine.merge(locations, on = ["location"])
@@ -107,7 +103,7 @@ if __name__ == "__main__":
         except:
             return x.location
     vaccine["location"] = vaccine.apply(removeLeadingZero,1)
-    
+
     #--(finally) merge in vaccine data
     _4streams = _3streams.merge(vaccine, on = ["date","location"], how="left")
     _4streams = _4streams.loc[_4streams.date>"2021-01-01"]
@@ -121,12 +117,10 @@ if __name__ == "__main__":
     #vaccine_us_replacement = vaccine_us_replacement.merge(locations, on = [])
     
     vaccine_state = vaccine_state.merge(vaccine_us_replacement, on = ["date"])
-    
     us_population = float(locations.loc[locations.location=="US","population"].values)
 
     locations = locations[["location","population"]]
     locations["state"] = [1 if len(x)==2 else 0 for x in locations.location.values]
-
     #--split pops into state and county
     states   = locations.loc[locations.state==1]
     counties = locations.loc[locations.state==0]
@@ -148,10 +142,8 @@ if __name__ == "__main__":
     
     location_props = counties.append(states)
     location_props["location"] = location_props["location"].apply(reformat,1)
-
     #--add in proprotion
     _4streams = _4streams.merge( location_props, on = ["location"] )
-    
     #--merge in the population proportions
     def levelup(x):
         loc = str(x)
@@ -159,14 +151,11 @@ if __name__ == "__main__":
             return "US"
         return loc[:2]  
     _4streams["levelup"] = _4streams.location.apply(levelup,1)
-
     vaccine_replace = vaccine.rename(columns={"vac_count":"replacement_count"})
     vaccine_replace = vaccine_replace[["date","location","replacement_count"]]
-    
     _4streams = _4streams.merge( vaccine_replace, left_on = ["date","levelup"], right_on = ["date","location"], how="left"  )
-
     #--write out the missing rows
-    missing_rows = _4streams.loc[np.isnan(_4streams.vacc_count)]
+    missing_rows = _4streams.loc[np.isnan(_4streams.vac_count)]
     missing_rows.to_csv("missing_rows.csv")
     
     #--impute missing vaccine counts 
@@ -176,11 +165,9 @@ if __name__ == "__main__":
         else:
             return x.vac_count
     _4streams["vac_count"] = _4streams.apply(impute,1)
-
     #--cleanup columns
     _4streams = _4streams[ ["date","location_x","location_name","cases","deaths","hosps","vac_count"] ]
     _4streams = _4streams.rename(columns={"location_x":"location"})
-    
     #--restrict to only FIPS in the locations.csv file
     locations = pd.read_csv('../../data-locations/locations.csv')
     locations = locations[["location"]]
@@ -189,4 +176,11 @@ if __name__ == "__main__":
     locations["location"] = locations.location.apply(reformat,1)
     
     _4streams = _4streams.merge(locations, on = ["location"])
+    
+
+    #investigating starting with Alabama
+
+    _4streams = _4streams[_4streams['date']<='2022-05-18']
+    _4streams['vac_count'] = _4streams['vac_count'].fillna(1)
+ 
     _4streams.to_csv("_4streams.csv")
