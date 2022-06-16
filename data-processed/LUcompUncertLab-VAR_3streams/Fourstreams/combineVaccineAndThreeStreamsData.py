@@ -26,7 +26,7 @@ if __name__ == "__main__":
     vaccine_state = vaccine.copy()
 
     #--import locations csv to help determine FIPS
-    locations = pd.read_csv('../../data-locations/locations.csv') 
+    locations = pd.read_csv('locations.csv') 
     locations = locations.rename(columns={"location":"replacement_location"})
     vaccine_state = vaccine_state.merge( locations
                                          ,left_on = ["location_name"]
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     _4streams = _4streams[ ["date","location_x","location_name","cases","deaths","hosps","vac_count"] ]
     _4streams = _4streams.rename(columns={"location_x":"location"})
     #--restrict to only FIPS in the locations.csv file
-    locations = pd.read_csv('../../data-locations/locations.csv')
+    locations = pd.read_csv('locations.csv')
     locations = locations[["location"]]
 
     #--reformat locations
