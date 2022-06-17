@@ -29,7 +29,7 @@ class viz(object):
         
         dir = self.checkDir()
         
-        for target in ["cases","deaths","hosps"]:
+        for target in ["cases","deaths","hosps","vac_count"]:
 
             if target !="hosps":
                 rdata = self.rweeklydata
@@ -102,7 +102,7 @@ class viz(object):
         
         dir = self.checkDir()
         
-        for col, target in zip(["county_cases","state_deaths","state_hosps"],["cases","deaths","hosps"]):
+        for col, target in zip(["county_cases","state_deaths","state_hosps","vac_counties"],["cases","deaths","hosps","vac_count"]):
 
             if col !="state_hosps":
                 rdata = self.rweeklydata
