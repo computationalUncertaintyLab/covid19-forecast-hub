@@ -182,5 +182,5 @@ if __name__ == "__main__":
 
     _4streams = _4streams[_4streams['date']<='2022-05-18']
     _4streams['vac_count'] = _4streams['vac_count'].fillna(1)
- 
-    _4streams.to_csv("_4streams.csv")
+    _4streams['vac_count'] = _4streams['vac_count'].astype(int)
+    _4streams.to_csv("_4streams.csv.gz", compression="gzip")
