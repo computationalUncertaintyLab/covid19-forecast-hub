@@ -7,8 +7,8 @@ class interface(object):
         if data is None:
             pass
         else:
-            self.data          = pd.read_csv("threestreams__state.csv.gz") 
-            self.county_data   = pd.read_csv("threestreams__county.csv.gz")
+            self.data          = pd.read_csv("fourstreams__state.csv.gz") 
+            self.county_data   = pd.read_csv("fourstreams__county.csv.gz")
             self.locations     = sorted(self.data.location.unique())
 
             self.buildDataForModel()
@@ -26,11 +26,11 @@ class interface(object):
 
     def include_weekly_data(self):
         import pandas as pd
-        self.weeklydata = pd.read_csv("threestreams__weekly.csv.gz")
+        self.weeklydata = pd.read_csv("fourstreams__weekly.csv.gz")
 
     def include_weekly_county_data(self):
         import pandas as pd
-        self.weeklycountydata = pd.read_csv("threestreams__weekly__county.csv.gz")
+        self.weeklycountydata = pd.read_csv("fourstreams__weekly__county.csv.gz")
             
     def subset2location(self):
         def subset(d):
@@ -132,9 +132,9 @@ class interface(object):
     def generateTargetNames(self):
         import numpy as np
 
-        # first target is always cases, second deaths, and third hosps.
+        # first target is always cases, second deaths, and third hosps, fourth vac_count
         targets = []
-        trgts = ["case","death","hosp"]
+        trgts = ["case","death","hosp","vac_count"]
         for trgt in trgts:
             targets.append(["{:d} day ahead inc covid {:s}".format(ahead,trgt) for ahead in np.arange(1,29+1)])
 
@@ -158,6 +158,7 @@ class interface(object):
                 dataPredictions["forecast_date"].extend(F*[self.forecast_date])
                 dataPredictions["location"].extend( F*[self.location] )
                 dataPredictions["target_end_date"].extend( self.target_end_days )
+                print(n)
                 dataPredictions["target"].extend( self.targets[n] )
                 dataPredictions["sample"].extend( F*[sample] )
                 dataPredictions["value"].extend( forecast )
@@ -247,7 +248,7 @@ class interface(object):
     def grab_post_process_predictions(self):
         from glob import glob
         import pandas as pd
-        files = sorted(glob("./location_specific_forecasts/*LUcompUncertLab-VAR3Streams__{:s}.csv.gz".format(self.fmtlocation)))
+        files = sorted(glob("./location_specific_forecasts/*LUcompUncertLab-VAR4Streams__{:s}.csv.gz".format(self.fmtlocation)))
 
         self.predictions = pd.read_csv(files[-1])
         return self.predictions
@@ -256,7 +257,7 @@ class interface(object):
         from glob import glob
         import pandas as pd
 
-        files = sorted(glob("./location_specific_forecasts/*LUcompUncertLab-VAR3Streams_FINAL__{:s}.csv.gz".format(self.fmtlocation)))
+        files = sorted(glob("./location_specific_forecasts/*LUcompUncertLab-VAR4Streams_FINAL__{:s}.csv.gz".format(self.fmtlocation)))
 
         self.quantiles = pd.read_csv(files[-1])
         return self.quantiles
