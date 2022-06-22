@@ -15,7 +15,7 @@ class dataprep(object):
         
     def load_cases(self):
         import pandas as pd
-        cases = pd.read_csv("truth-Incident Cases.csv")
+        cases = pd.read_csv("../../data-truth/truth-Incident Cases.csv")
         cases.location = cases.location.astype(str)
         
         # we need to separate cases at the state level from cases at county level
@@ -44,7 +44,7 @@ class dataprep(object):
         
     def load_deaths(self):
         import pandas as pd
-        deaths = pd.read_csv("truth-Incident Deaths.csv")
+        deaths = pd.read_csv("../../data-truth/truth-Incident Deaths.csv")
         deaths.location = deaths.location.astype(str)
 
         norm_loc = []
@@ -62,7 +62,7 @@ class dataprep(object):
 
     def load_hosps(self):
         import pandas as pd
-        hosps = pd.read_csv("truth-Incident Hospitalizations.csv")
+        hosps = pd.read_csv("../../data-truth/truth-Incident Hospitalizations.csv")
         hosps.location = hosps.location.astype(str)
 
         norm_loc = []
