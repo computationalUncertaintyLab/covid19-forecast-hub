@@ -7,10 +7,10 @@ import pandas as pd
 if __name__ == "__main__":
 
     #--import the threesteams dataset
-    _3streams__county = pd.read_csv("threestreams__county.csv.gz")
+    _3streams__county = pd.read_csv("../LUcompUncertLab-VAR_3streams/threestreams__county.csv.gz")
     _3streams__county = _3streams__county.rename(columns = {"county_cases":"cases","state_deaths":"deaths","state_hosps":"hosps"})
     
-    _3streams__state = pd.read_csv("threestreams__state.csv.gz")
+    _3streams__state = pd.read_csv("../LUcompUncertLab-VAR_3streams/threestreams__state.csv.gz")
 
     _3streams = _3streams__state.append(_3streams__county)
     
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     vaccine_state = vaccine.copy()
 
     #--import locations csv to help determine FIPS
-    locations = pd.read_csv('locations.csv') 
+    locations = pd.read_csv("../../data-locations/locations.csv") 
     locations = locations.rename(columns={"location":"replacement_location"})
     vaccine_state = vaccine_state.merge( locations
                                          ,left_on = ["location_name"]
@@ -169,7 +169,7 @@ if __name__ == "__main__":
     _4streams = _4streams[ ["date","location_x","location_name","cases","deaths","hosps","vac_count"] ]
     _4streams = _4streams.rename(columns={"location_x":"location"})
     #--restrict to only FIPS in the locations.csv file
-    locations = pd.read_csv('locations.csv')
+    locations = pd.read_csv("../../data-locations/locations.csv")
     locations = locations[["location"]]
 
     #--reformat locations
