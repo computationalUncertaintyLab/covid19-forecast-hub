@@ -1,4 +1,4 @@
-#berlin
+# berlin
 
 import numpy as np
 import pandas as pd
@@ -16,17 +16,24 @@ if __name__ == "__main__":
         print("Importing Past Data")
         google = pd.read_csv("./AllGoogleData.csv.gz")
         # set start date to last date in data plus 1 day
-        start_date = datetime.strptime(max(google["date"]), '%Y-%m-%d').date() + timedelta(days=1)
+        start_date = datetime.strptime(
+            max(google["date"]), "%Y-%m-%d"
+        ).date() + timedelta(days=1)
 
-    except:
+    except FileNotFoundError:
         print("No past data found")
-        start_date = date(2020,2,22)
+        start_date = date(2020, 2, 22)
 
     # find date of most recent data
 
     # get county data
     print("Getting County Data")
-    county = covidcast.signal(data_source="google-symptoms",signal="s01_raw_search", geo_type="county", start_day = start_date)
+    county = covidcast.signal(
+        data_source="google-symptoms",
+        signal="s01_raw_search",
+        geo_type="county",
+        start_day=start_date,
+    )
 
     # configure df
     county_data = pd.DataFrame()
@@ -37,18 +44,27 @@ if __name__ == "__main__":
 
     # get state data
     print("Getting State Data")
-    state = covidcast.signal(data_source="google-symptoms",signal="s01_raw_search", geo_type="state", start_day = start_date)
+    state = covidcast.signal(
+        data_source="google-symptoms",
+        signal="s01_raw_search",
+        geo_type="state",
+        start_day=start_date,
+    )
 
     # configure df
     state_data = pd.DataFrame()
     state_data["date"] = state["time_value"]
-    state_data["location"] = [x[0:2] for x in covidcast.abbr_to_fips(state["geo_value"], ignore_case=True)]
-    state_data["location_name"] = covidcast.abbr_to_name(state["geo_value"], ignore_case=True)
+    state_data["location"] = [
+        x[0:2] for x in covidcast.abbr_to_fips(state["geo_value"], ignore_case=True)
+    ]
+    state_data["location_name"] = covidcast.abbr_to_name(
+        state["geo_value"], ignore_case=True
+    )
     state_data["value"] = state["value"]
 
     data = pd.concat([county_data, state_data], ignore_index=True)
 
-    # import FIPS reference 
+    # import FIPS reference
     cases = pd.read_csv("../../data-truth/truth-Incident Cases.csv")
     cases["location"] = cases["location"].astype(str)
 
@@ -58,7 +74,7 @@ if __name__ == "__main__":
     locations = pd.Index(cases["location"].unique())
 
     # dict where data is going to go
-    dic = {"date":[], "location":[], "location_name":[], "value":[]}
+    dic = {"date": [], "location": [], "location_name": [], "value": []}
 
     print("Generating Missing Data")
     # for every date in the df
@@ -67,10 +83,12 @@ if __name__ == "__main__":
         sub_google = data.loc[data["date"] == d]
 
         # select all states
-        mask = (sub_google["location"].str.len() <= 2) & (sub_google["location"] != "US")
+        mask = (sub_google["location"].str.len() <= 2) & (
+            sub_google["location"] != "US"
+        )
         state = sub_google.loc[mask]
         state["location"] = state["location"].astype(int)
-        
+
         # Add US and 5 missing randos
         # sorry for the gross code :(
 
@@ -109,11 +127,11 @@ if __name__ == "__main__":
         # set up list of locations that need to be filled
         google_locations = pd.Index(sub_google["location"].unique())
         diff = locations.difference(google_locations).tolist()
-        
+
         # for every location append the state level number
         for l in diff:
-            # locate the state value for that county 
-            value = state.loc[state["location"] == int(int(l)/1000)].iat[0,3]
+            # locate the state value for that county
+            value = state.loc[state["location"] == int(int(l) / 1000)].iat[0, 3]
             dic["date"].append(d)
             dic["location"].append(str(l))
             dic["location_name"].append(covidcast.fips_to_name(l)[0])
@@ -124,5 +142,7 @@ if __name__ == "__main__":
         data = pd.concat([data, pd.DataFrame.from_dict(dic)], ignore_index=True)
     else:
         data = pd.concat([google, data, pd.DataFrame.from_dict(dic)], ignore_index=True)
+    
+    data["date"] = data["date"].str.slice(0, 10)
 
     data.to_csv("AllGoogleData.csv.gz", index=False, compression="gzip")
