@@ -51,7 +51,7 @@ addCumulativeTargets:
 postprocess:
 # At the moment this scans the CSV file produced by addCumualtiveTargets and cuts any values to 0.
 	echo "In POST = " ${LOCATION}
-	$(PYTHON) post_process.py --LOCATION ${LOCATION} && echo "Post process complete"
+	$(PYTHON) postprocess.py --LOCATION ${LOCATION} && echo "Post process complete"
 
 fromSamples2Quantiles:
 # This converts the above file that contains samples into quantiles.
