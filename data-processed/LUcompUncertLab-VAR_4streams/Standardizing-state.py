@@ -56,6 +56,6 @@ if __name__ == "__main__":
     fourstreams_state_normalized = pd.concat((fourstreams_state_date,fourstreams_state_location,fourstreams_state_location_name,fourstreams_state_cases_normalized, fourstreams_state_deaths_normalized, fourstreams_state_hosps_normalized,fourstreams_state_vac_count_normalized), axis=1)
     fourstreams_state_normalized.columns = ['date','location','location_name','cases','deaths','hosps','vac_count']
     #converting it to csv
-    fourstreams_state_normalized.to_csv('fourstreams_state_normalized.csv.gz')
+    fourstreams_state_normalized.to_csv('fourstreams__state.csv.gz')
 
     
