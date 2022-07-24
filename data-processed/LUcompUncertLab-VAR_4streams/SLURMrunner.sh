@@ -4,6 +4,7 @@
  
 # Request 1 hour of computing time
 #SBATCH --time=2:00:00
+#SBATCH --nodes=1
 #SBATCH --ntasks=3
  
 # Give a name to your job to aid in monitoring
