@@ -60,7 +60,7 @@ if __name__ == "__main__":
     forecast = forecast.loc[ ~forecast.target.str.contains("^0 day") ] # REMOVE SUNDAY "DAY" FORECASTS
     
     day = io.getForecastDate()
-    forecast.to_csv("./location_specific_forecasts/{:s}_LUcompUncertLab-VAR3Streams__{:s}.csv.gz".format(day,io.fmtlocation)
+    forecast.to_csv("./location_specific_forecasts/{:s}_LUcompUncertLab-VAR4Streams__{:s}.csv.gz".format(day,io.fmtlocation)
                               ,header=True
                               ,index=False
                               ,mode="w"
