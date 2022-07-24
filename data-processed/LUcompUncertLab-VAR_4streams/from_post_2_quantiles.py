@@ -40,7 +40,7 @@ if __name__ == "__main__":
     quantiles = fromSamples2Quantiles(io.predictions)
 
     day = (pd.to_datetime(io.getForecastDate()) + datetime.timedelta(days=1)).strftime("%Y-%m-%d") #MOVE THIS FROM SUNDAY TO MONDAY
-    quantiles.to_csv("./location_specific_forecasts/{:s}_LUcompUncertLab-VAR3Streams_FINAL__{:s}.csv.gz".format(day,io.fmtlocation)
+    quantiles.to_csv("./location_specific_forecasts/{:s}_LUcompUncertLab-VAR4Streams_FINAL__{:s}.csv.gz".format(day,io.fmtlocation)
                               ,header=True
                               ,index=False
                               ,mode="w"
