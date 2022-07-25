@@ -1,0 +1,7 @@
+library(covidData)
+library(covidHubUtils)
+#covidHubUtils::preprocess_nytimes(".")
+covidHubUtils::preprocess_jhu(".")
+#covidHubUtils::preprocess_visualization_truth("./covid19-forecast-hub/visualization/vis-master/covid-csv-tools/dist/truth")
+covidHubUtils::preprocess_hospitalization(".")
+#covidHubUtils::save_truth_for_zoltar("./covid19-forecast-hub/data-truth/")
