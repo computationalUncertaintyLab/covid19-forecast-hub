@@ -12,8 +12,8 @@ runall: create_location_specific_folder buildmodel transformDailyPredictions2Wee
 .PHONY: runall
 #----------------------------------------------------------------------------------------------
 checkout_dev:
-#  This moves the git repo over to the ludev branch. 	
-	git checkout ludev
+#  This moves the git repo over to the vacpatch branch. 	
+	git checkout vac_patch
 
 create_location_specific_folder:
 # creates this folder if it does not already exist
