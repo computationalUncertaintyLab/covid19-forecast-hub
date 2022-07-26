@@ -22,6 +22,7 @@ create_location_specific_folder:
 vaccinedatadownload:
 #we run the sbatch script for downloading the vaccine data
 	$(sbatch) vaccinedata.sh
+
 combinevaccinedata:
 #we add the vaccine data in the threestreams to make it fourstreams
 	$(PYTHON) combineVaccineAndThreeStreamsData.py && echo "Added vaccine data"
