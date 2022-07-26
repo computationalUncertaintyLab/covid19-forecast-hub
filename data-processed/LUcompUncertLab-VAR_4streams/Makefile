@@ -21,7 +21,7 @@ create_location_specific_folder:
 
 vaccinedatadownload:
 #we run the sbatch script for downloading the vaccine data
-	$(sbatch) vaccinedata.sh && echo "downloaded latest vaccine data"
+	sbatch vaccinedata.sh && echo "downloaded latest vaccine data"
 
 combinevaccinedata:
 #we add the vaccine data in the threestreams to make it fourstreams
