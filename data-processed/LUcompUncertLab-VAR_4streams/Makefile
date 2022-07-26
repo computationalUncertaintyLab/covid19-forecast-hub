@@ -7,7 +7,7 @@ COMMITsuffix:=$(shell date +"%Y-%m-%d")
 
 COMMIT:=$(COMMITprefix) $(COMMITsuffix)
 
-data: dataprocessed convert_raw_data2weeks convert_raw_data2weeks_county
+data: vaccinedatadownload combinevaccinedata dataprocessed  standardizing_state convert_raw_data2weeks convert_raw_data2weeks_county
 runall: create_location_specific_folder buildmodel transformDailyPredictions2Weekly addCumulativeTargets postprocess fromSamples2Quantiles plotTrajectories
 .PHONY: runall
 #----------------------------------------------------------------------------------------------
@@ -19,10 +19,21 @@ create_location_specific_folder:
 # creates this folder if it does not already exist
 	mkdir -p location_specific_forecasts
 
+vaccinedatadownload:
+#we run the sbatch script for downloading the vaccine data
+	$(sbatch) vaccinedata.sh
+combinevaccinedata:
+#we add the vaccine data in the threestreams to make it fourstreams
+	$(PYTHON) combineVaccineAndThreeStreamsData.py && echo "Added vaccine data"
+
 dataprocessed:
 # Update the incident cases, deaths, and hospitalizations to the latest
 # QUESTION --- Should we include a script right after here that reports the latest day of data?   
 	$(PYTHON) data-processing.py && echo "Generate the three csv files"
+
+standardizing_state:
+# this standardizesthe state level values of the fourstreams state file generated previously
+	$(PYTHON) Standardizing-state.py && echo "Standardized the state level values"
 
 convert_raw_data2weeks:
 # Convert the threestreams data to weekly
