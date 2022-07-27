@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import validation_curve
-from sympy import Le
 from itertools import chain
 
 if __name__ == "__main__":
