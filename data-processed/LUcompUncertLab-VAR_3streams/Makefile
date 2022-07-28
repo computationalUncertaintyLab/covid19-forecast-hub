@@ -7,7 +7,7 @@ COMMITsuffix:=$(shell date +"%Y-%m-%d")
 
 COMMIT:=$(COMMITprefix) $(COMMITsuffix)
 
-data: dataprocessed convert_raw_data2weeks convert_raw_data2weeks_county
+data: dataprocessed nomralize_data convert_raw_data2weeks convert_raw_data2weeks_county
 runall: create_location_specific_folder buildmodel transformDailyPredictions2Weekly addCumulativeTargets postprocess fromSamples2Quantiles plotTrajectories
 .PHONY: runall
 #----------------------------------------------------------------------------------------------
@@ -23,6 +23,10 @@ dataprocessed:
 # Update the incident cases, deaths, and hospitalizations to the latest
 # QUESTION --- Should we include a script right after here that reports the latest day of data?   
 	$(PYTHON) data-processing.py && echo "Generate the three csv files"
+
+nomralize_data:
+# Normalize the data to the range [0,1]
+	$(PYTHON) normalize.py && echo "Normalize the data"
 
 convert_raw_data2weeks:
 # Convert the threestreams data to weekly
