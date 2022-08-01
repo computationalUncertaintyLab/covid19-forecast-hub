@@ -58,14 +58,12 @@ class interface(object):
     def buildDataForModel(self):
         import numpy as np
         
-        y = np.array(self.data.drop(columns=["location","location_name"]).set_index("date"))
-
-        print("HERE")
+        y = np.array(self.data.drop(columns=["location","location_name"]).set_index("date")).T
         
         y = self.normalize(y)
 
-        self.modeldata = y.T
-        return y.T
+        self.modeldata = y
+        return y
 
     def normalize(self, x):
         import numpy as np
@@ -174,11 +172,9 @@ class interface(object):
         dataPredictions = {"forecast_date":[]
                            ,"target_end_date":[]
                            ,"location":[], "target":[],"sample":[],"value":[]}
-        predictions = self.demodel.fit["ytilde"][:,-model.F:,:] # this is coming from the model object
+        predictions = model.fit["ytilde"][:,-model.F:,:] # this is coming from the model object
 
-        print(predictions.shape)
         predictions = self.denormalize(predictions)
-        print(predictions.shape)
 
         F = self.numOfForecasts
         for sample,forecasts in enumerate(np.moveaxis(predictions,2,0)):
@@ -187,7 +183,6 @@ class interface(object):
                 dataPredictions["forecast_date"].extend(F*[self.forecast_date])
                 dataPredictions["location"].extend( F*[self.location] )
                 dataPredictions["target_end_date"].extend( self.target_end_days )
-                print(n)
                 dataPredictions["target"].extend( self.targets[n] )
                 dataPredictions["sample"].extend( F*[sample] )
                 dataPredictions["value"].extend( forecast )

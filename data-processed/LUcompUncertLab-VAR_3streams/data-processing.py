@@ -81,7 +81,7 @@ class dataprep(object):
     def load_googles(self):
         import pandas as pd
         from datetime import date, datetime, timedelta
-        googles = pd.read_csv("AllGoogleData.csv.gz", compression="gzip")
+        googles = pd.read_csv("../../data-truth/AllGoogleData.csv.gz", compression="gzip")
         googles.location = googles.location.astype(str)
 
         #adjust dates 

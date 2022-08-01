@@ -5,6 +5,7 @@
 from interface import interface
 from model import VAR
 import argparse
+import pandas as pd
 
 if __name__ == "__main__":
 
@@ -20,8 +21,6 @@ if __name__ == "__main__":
         
     io.subset2location()
 
-    print(io.modeldata.shape)
-    print(io.modeldata)
 
     forecast_model = VAR(io.modeldata)
     forecast_model.fit()
