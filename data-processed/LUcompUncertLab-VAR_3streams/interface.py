@@ -1,5 +1,8 @@
 #mcandrew
 
+from locale import normalize
+
+
 class interface(object):
     def __init__(self,data=None, location=None):
         import pandas as pd
@@ -56,9 +59,31 @@ class interface(object):
         import numpy as np
         
         y = np.array(self.data.drop(columns=["location","location_name"]).set_index("date"))
+
+        print("HERE")
         
+        y = self.normalize(y)
+
         self.modeldata = y.T
         return y.T
+
+    def normalize(self, x):
+        import numpy as np
+        norms = []
+        for idx, data in enumerate(x):
+            mean = np.mean(data)
+            std = np.std(data)
+            norms.append([mean, std])
+            x[idx] = (data - mean) / std
+        
+        self.norms = np.array(norms)
+        return x
+
+    def denormalize(self, x):
+        import numpy as np
+        for idx, data in enumerate(zip(x,self.norms)):
+            x[idx] = data[0] * data[1][1] + data[1][0]
+        return x
 
     def getForecastDate(self):
         import datetime
@@ -149,7 +174,11 @@ class interface(object):
         dataPredictions = {"forecast_date":[]
                            ,"target_end_date":[]
                            ,"location":[], "target":[],"sample":[],"value":[]}
-        predictions = model.fit["ytilde"][:,-model.F:,:] # this is coming from the model object
+        predictions = self.demodel.fit["ytilde"][:,-model.F:,:] # this is coming from the model object
+
+        print(predictions.shape)
+        predictions = self.denormalize(predictions)
+        print(predictions.shape)
 
         F = self.numOfForecasts
         for sample,forecasts in enumerate(np.moveaxis(predictions,2,0)):

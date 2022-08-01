@@ -143,6 +143,7 @@ if __name__ == "__main__":
     else:
         data = pd.concat([google, data, pd.DataFrame.from_dict(dic)], ignore_index=True)
     
-    data["date"] = data["date"].str.slice(0, 10)
+    
+    data["date"] = data["date"].astype(str).str.slice(0, 10)
 
     data.to_csv("AllGoogleData.csv.gz", index=False, compression="gzip")
