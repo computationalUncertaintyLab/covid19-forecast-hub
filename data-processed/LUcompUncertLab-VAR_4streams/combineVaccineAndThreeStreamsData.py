@@ -176,10 +176,18 @@ if __name__ == "__main__":
     locations["location"] = locations.location.apply(reformat,1)
     
     _4streams = _4streams.merge(locations, on = ["location"])
-    
+    pd.options.display.float_format = '{:.4f}'.format
 
     #investigating starting with Alabama
 
-    _4streams['vac_count'] = _4streams['vac_count'].fillna(1)
+    #_4streams['vac_count'] = _4streams['vac_count'].fillna(1)
+    #_4streams['vac_count'] = _4streams['vac_count'].astype(int)
+    #_4streams.to_csv("_4streams.csv.gz", compression="gzip")
+
+    #trying on all location
+    _4streams = _4streams.set_index('date')
+    _4streams['vac_count'] = _4streams['vac_count'].interpolate()
+    _4streams.reset_index(inplace=True)
     _4streams['vac_count'] = _4streams['vac_count'].astype(int)
     _4streams.to_csv("_4streams.csv.gz", compression="gzip")
+
