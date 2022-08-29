@@ -193,6 +193,7 @@ if __name__ == "__main__":
 
     #script to interpolate the data for the vaccine values
 
+    _4streams['date'] = _4streams['date'].dt.strftime('%Y-%m-%d')
     for location in _4streams['location_name'].unique():
             for date in _4streams['date'].unique():
                 if date >= '2022-06-16':
@@ -201,4 +202,4 @@ if __name__ == "__main__":
     
     #converting to csv
     _4streams.to_csv("_4streams.csv.gz", compression="gzip")
-    
+
