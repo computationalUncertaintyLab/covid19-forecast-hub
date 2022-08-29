@@ -185,9 +185,20 @@ if __name__ == "__main__":
     #_4streams.to_csv("_4streams.csv.gz", compression="gzip")
 
     #trying on all location
-    _4streams = _4streams.set_index('date')
-    _4streams['vac_count'] = _4streams['vac_count'].interpolate()
-    _4streams.reset_index(inplace=True)
-    _4streams['vac_count'] = _4streams['vac_count'].astype(int)
-    _4streams.to_csv("_4streams.csv.gz", compression="gzip")
+    #_4streams = _4streams.set_index('date')
+    #_4streams['vac_count'] = _4streams['vac_count'].interpolate()
+    #_4streams.reset_index(inplace=True)
+    #_4streams['vac_count'] = _4streams['vac_count'].astype(int)
+    #_4streams.to_csv("_4streams.csv.gz", compression="gzip")
 
+    #script to interpolate the data for the vaccine values
+
+    for location in _4streams['location_name'].unique():
+            for date in _4streams['date'].unique():
+                if date >= '2022-06-16':
+                    _4streams['vac_count'] = _4streams['vac_count'].interpolate()
+                    _4streams['vac_count'] = _4streams['vac_count'].astype(int)
+    
+    #converting to csv
+    _4streams.to_csv("_4streams.csv.gz", compression="gzip")
+    
