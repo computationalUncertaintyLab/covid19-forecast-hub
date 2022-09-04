@@ -13,9 +13,13 @@ if __name__ == "__main__":
     _3streams__state = pd.read_csv("../LUcompUncertLab-VAR_3streams/threestreams__state.csv.gz")
 
     _3streams = _3streams__state.append(_3streams__county)
-    
+    date_3streams = _3streams['date'].max()
+
     #--import vaccine data
     vaccine1 = pd.read_csv('allVaccinationData.csv.gz')
+    vaccine1_date = vaccine1['date'].max()
+    if date_3streams > vaccine1_date:
+        _3streams = _3streams[_3streams['date'] <= vaccine1_date]
     vaccine1 = vaccine1.loc[:, ["date","fips","recip_county", "recip_state", "series_complete_yes"]] #subset to column we care about
     vaccine = vaccine1.rename(columns = {'recip_county':'location_name'
                                         ,'fips':'location'
@@ -193,13 +197,15 @@ if __name__ == "__main__":
 
     #script to interpolate the data for the vaccine values
 
-    _4streams['date'] = _4streams['date'].dt.strftime('%Y-%m-%d')
-    for location in _4streams['location_name'].unique():
-            for date in _4streams['date'].unique():
-                if date >= '2022-06-16':
-                    _4streams['vac_count'] = _4streams['vac_count'].interpolate()
-                    _4streams['vac_count'] = _4streams['vac_count'].astype(int)
+    #_4streams['date'] = _4streams['date'].dt.strftime('%Y-%m-%d')
+    #for location in _4streams['location_name'].unique():
+    #        for date in _4streams['date'].unique():
+    #            if date >= '2022-06-16':
+    #                _4streams['vac_count'] = _4streams['vac_count'].interpolate()
+    #                _4streams['vac_count'] = _4streams['vac_count'].astype(int)
     
     #converting to csv
-    _4streams.to_csv("_4streams.csv.gz", compression="gzip")
-
+    #_4streams.to_csv("_4streams.csv.gz", compression="gzip")
+    temp1_lis = ['Garden County']
+    temp1 = _4streams[_4streams['location_name'].isin(temp1_lis)]
+    temp1.to_csv("_4streams_coutycheck.csv.gz", compression="gzip")
