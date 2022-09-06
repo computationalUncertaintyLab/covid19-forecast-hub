@@ -205,7 +205,7 @@ if __name__ == "__main__":
     #                _4streams['vac_count'] = _4streams['vac_count'].astype(int)
     
     #converting to csv
-    #_4streams.to_csv("_4streams.csv.gz", compression="gzip")
-    temp1_lis = ['Garden County']
+    _4streams.to_csv("_4streams.csv.gz", compression="gzip")
+    temp1_lis = ['Alabama']
     temp1 = _4streams[_4streams['location_name'].isin(temp1_lis)]
-    temp1.to_csv("_4streams_coutycheck.csv.gz", compression="gzip")
+    temp1.to_csv("_4streams_al.csv.gz", compression="gzip")
