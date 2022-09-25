@@ -197,15 +197,22 @@ if __name__ == "__main__":
 
     #script to interpolate the data for the vaccine values
 
-    #_4streams['date'] = _4streams['date'].dt.strftime('%Y-%m-%d')
-    #for location in _4streams['location_name'].unique():
+    _4streams['date'] = _4streams['date'].dt.strftime('%Y-%m-%d')
+    # for location in _4streams['location_name'].unique():
     #        for date in _4streams['date'].unique():
     #            if date >= '2022-06-16':
     #                _4streams['vac_count'] = _4streams['vac_count'].interpolate()
     #                _4streams['vac_count'] = _4streams['vac_count'].astype(int)
     
     #converting to csv
-    _4streams.to_csv("_4streams.csv.gz", compression="gzip")
-    temp1_lis = ['Alabama']
-    temp1 = _4streams[_4streams['location_name'].isin(temp1_lis)]
-    temp1.to_csv("_4streams_al.csv.gz", compression="gzip")
+    # _4streams.to_csv("_4streams.csv.gz", compression="gzip")
+    temp1_lis = ['Jefferson County']
+    temp2_lis = 1
+    print(_4streams.info())
+    print(_4streams.head())
+    print(len(_4streams))
+    temp1 = _4streams.query('location_name == ["Autauga County"] and location == ["1001"]')
+    print(temp1)
+    #we will hve to select county names in the location_name column to subset for graphs
+    #temp2_lis = ['Jefferson County', '']
+    temp1.to_csv("_4streams_1st_Set.csv.gz", compression="gzip")
