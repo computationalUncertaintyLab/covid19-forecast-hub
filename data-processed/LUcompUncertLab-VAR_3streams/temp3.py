@@ -37,6 +37,7 @@ if __name__ == "__main__":
 
     deathTargets["target"] = deathTargets["week"].astype(str) + " wk ahead cum death"
     deathTargets = deathTargets[["forecast_date","target_end_date","target","location","sample","value"]]
+    print(deathTargets)
     cumu_cases_df = pd.read_csv("../../data-truth/truth-Cumulative Cases.csv")
     cumu_cases_df['date'] = pd.to_datetime(cumu_cases_df['date'])
     latest_cum_value = cumu_cases_df[cumu_cases_df['date'] == cumu_cases_df['date'].max()]
@@ -46,7 +47,8 @@ if __name__ == "__main__":
     deathTargets_fixed = deathTargets.merge(latest_cum_value, how = 'left', left_on= 'location', right_on='location')
     deathTargets_fixed['value'] = deathTargets_fixed['value_x'] + deathTargets_fixed['value_y']
     deathTargets_fixed = deathTargets_fixed[["forecast_date","target_end_date","target","location","sample","value"]]
-    predictions = predictions.append(deathTargets)
+    print(deathTargets_fixed)
+    predictions = predictions.append(deathTargets_fixed)
     day = io.getForecastDate()
     predictions.to_csv("./location_specific_forecasts/{:s}_LUcompUncertLab-VAR__{:s}__allpredictions.csv.gz".format(day,io.fmtlocation)
                               ,header=True
