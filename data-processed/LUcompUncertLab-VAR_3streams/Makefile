@@ -46,7 +46,7 @@ transformDailyPredictions2Weekly:
 addCumulativeTargets:
 # This adds a target that is cumualtive deaths
 	echo "Adding cumulative deaths = " ${LOCATION}
-	$(PYTHON) addCumulativeTargets.py --LOCATION ${LOCATION} && echo "Added Cumualative Targets"
+	$(PYTHON) temp3.py --LOCATION ${LOCATION} && echo "Added Cumualative Targets"
 
 postprocess:
 # At the moment this scans the CSV file produced by addCumualtiveTargets and cuts any values to 0.
